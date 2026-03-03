@@ -2,6 +2,11 @@
 
 This is a standalone multi-service platform built in the repository root.
 
+## Inspiration
+
+This project is inspired by:  
+https://github.com/tpaip607/research-codecompass
+
 ## Services
 
 - `api` (FastAPI): project registry, versioned indexing, graph API, MCP runtime controls
@@ -18,17 +23,56 @@ cp .env.example .env
 # set HOST_PROJECTS_ROOT to a real absolute path on your machine
 ```
 
-2. Start stack:
+2. Configure `.env` values for your machine.
+
+3. Start stack:
 
 ```bash
 docker compose up --build -d
 ```
 
-3. Open admin panel:
+4. Open admin panel:
 
 - Web: http://localhost:5173
 - API docs: http://localhost:8000/docs
 - Neo4j Browser: http://localhost:7474
+
+## Environment Configuration (`.env`)
+
+Copy template and edit:
+
+```bash
+cp .env.example .env
+```
+
+Core paths and DB:
+
+- `HOST_PROJECTS_ROOT` - absolute host path mounted into container as `/host_projects`.
+- `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` - PostgreSQL metadata DB config.
+- `NEO4J_USER`, `NEO4J_PASSWORD` - Neo4j auth.
+
+Indexing and graph limits:
+
+- `AUTO_REINDEX_INTERVAL_SECONDS` - global watcher interval.
+- `DEFAULT_POLL_INTERVAL_SECONDS` - default per-project polling interval in UI.
+- `MAX_GRAPH_NODES_FULL_VIEW` - cap for full graph nodes in API/UI.
+- `MAX_GRAPH_EDGES_FULL_VIEW` - cap for full graph edges in API/UI.
+- `AST_EXCLUDED_DIRNAMES` - comma-separated directories excluded from indexing (for example: `venv,.venv,site-packages`).
+
+MCP runtime defaults:
+
+- `MCP_DEFAULT_TRANSPORT` - `streamable-http`, `http`, `sse`, or `stdio`.
+- `MCP_HTTP_HOST` - bind host for MCP HTTP transport (usually `0.0.0.0` in Docker).
+- `MCP_HTTP_PORT` - MCP HTTP port exposed by Docker.
+- `MCP_HTTP_PATH` - MCP endpoint path (for example `/mcp`).
+- `MCP_HTTP_PUBLIC_URL` - URL shown in generated client snippets.
+- `MCP_HTTP_STATELESS` - `true/false`, used for HTTP transports except SSE.
+
+After changing `.env`, restart services:
+
+```bash
+docker compose up -d --build
+```
 
 ## Supported workflows
 
